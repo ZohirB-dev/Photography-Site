@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import cors from 'cors'; // Import cors
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,7 +20,6 @@ app.use(cors({
 const jsonFilePath = path.join(__dirname, '../src/imageData.json');
 
 app.get('/generate-image-data', (req, res) => {
-  console.log('recieved request for data')
 
   fs.readFile(jsonFilePath, 'utf-8', (err, data) => {
     if (err) {
@@ -29,12 +28,12 @@ app.get('/generate-image-data', (req, res) => {
       return;
     }
     try {
-      const imageData = JSON.parse(data); // Parse JSON data
-      console.log('Sending JSON Data:', imageData);
-      res.json(imageData); // Send JSON response
+      const imageData = JSON.parse(data);
+      res.setHeader('Content-Type', 'application/json');
+      res.send(imageData); // Send JSON response
     } catch (parseError) {
       console.error(`Error parsing JSON: ${parseError}`);
-      res.status(500).send('Error parsing image data');
+      res.status(500).json({ error: 'Error parsing image data', details: parseError.message });
     }
   });
 });

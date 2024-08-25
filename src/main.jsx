@@ -1,9 +1,9 @@
 import { createRoot } from 'react-dom/client'
-import AppTwo from './AppTwo'
+import App from './App'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <>
-    <AppTwo />
+    <App />
   </>,
 )

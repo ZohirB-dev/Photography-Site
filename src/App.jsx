@@ -13,27 +13,41 @@ function App() {
 
   const fetchData = async () => {
     try {
-      console.log("Fetching data from API...");
-      const response = await fetch('http://localhost:3001/generate-image-data');
-      const text = await response.text();
+        console.log("Fetching data from API...");
+        const response = await fetch('http://localhost:3001/generate-image-data');
+        
+        // Check if response is OK
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        // Directly parse JSON
+        const parsedData = await response.json();
+        
+        console.log("Fetched Data:", parsedData);
+        
+        // Check if parsedData is an array
+        if (!Array.isArray(parsedData)) {
+            throw new Error('Fetched data is not an array');
+        }
+        
+        // Set state with parsed data
+        setImageData(parsedData);
+        
+        // Extract unique categories
+        const uniqueCategories = [...new Set(parsedData.map((image) => image.category))];
+        setCategories(uniqueCategories);
 
-      const jsonString = text.match(/\[.*\]/)[0];
-      const parsedData = JSON.parse(jsonString);
-
-      console.log("Fetched Data:", parsedData);
-
-      setImageData(parsedData);
-      const uniqueCategories = [...new Set(parsedData.map((image) => image.category))];
-      setCategories(uniqueCategories);
-
-      if (uniqueCategories.length > 0) {
-        setActiveCategory(uniqueCategories[0]);
-        setFilteredImages(parsedData.filter((image) => image.category === uniqueCategories[0]));
-      }
+        // Set the active category and filtered images
+        if (uniqueCategories.length > 0) {
+            setActiveCategory(uniqueCategories[0]);
+            setFilteredImages(parsedData.filter((image) => image.category === uniqueCategories[0]));
+        }
     } catch (error) {
-      console.error('Error fetching image data:', error);
+        console.error('Error fetching image data:', error);
     }
-  };
+};
+
 
   useEffect(() => {
     console.log("useEffect running...");
@@ -57,4 +71,6 @@ function App() {
     </div>
   );
 }
+
+export default App
 

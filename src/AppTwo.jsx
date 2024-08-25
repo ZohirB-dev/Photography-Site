@@ -4,27 +4,34 @@ function AppTwo() {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
 
-
-    fetch("/generate-image-data")
-    .then(response => {
-        // Check if response is OK and content type is JSON
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const contentType = response.headers.get("Content-Type");
-        if (!contentType || !contentType.includes("application/json")) {
-            console.log(response.json())
-            throw new Error("Response is not JSON");
-        }
-        return response.json();
-    })
-    .then(data => {
-        setData(data);
-    })
-    .catch(error => {
-        console.error('Error fetching image data:', error);
-        setError(error.message); // Store error message in state
-    });
+    console.log("Applications rendered")
+    useEffect(() => {
+        fetch("http://localhost:3001/generate-image-data")
+            .then(response => {
+                // Check if response is OK
+                console.log('Response: ', response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+    
+                // Check if content type is JSON
+                const contentType = response.headers.get('Content-Type');
+                console.log('Content-Type:', contentType)
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Response is not JSON");
+                }
+    
+                return response.json(); // Parse the JSON data from the response body
+            })
+            .then(data => {
+                setData(data); // Use the data in your state
+            })
+            .catch(error => {
+                console.error('Error fetching image data:', error);
+                setError(error.message); // Store error message in state
+            });
+    }, []);
+    
 
     return (
         <div>
