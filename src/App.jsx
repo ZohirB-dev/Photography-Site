@@ -7,52 +7,47 @@ function App() {
   const [categories, setCategories] = useState([]); 
   const [activeCategory, setActiveCategory] = useState(''); 
   const [filteredImages, setFilteredImages] = useState([]); 
-
-  // Debugging Logs
-  console.log("Component Rendered");
+  const [isDataFetched, setIsDataFetched] = useState(false); // Track if initial data has been fetched
 
   const fetchData = async () => {
     try {
         console.log("Fetching data from API...");
         const response = await fetch('http://localhost:3001/generate-image-data');
         
-        // Check if response is OK
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
-        // Directly parse JSON
         const parsedData = await response.json();
         
         console.log("Fetched Data:", parsedData);
         
-        // Check if parsedData is an array
         if (!Array.isArray(parsedData)) {
             throw new Error('Fetched data is not an array');
         }
         
-        // Set state with parsed data
         setImageData(parsedData);
         
-        // Extract unique categories
         const uniqueCategories = [...new Set(parsedData.map((image) => image.category))];
         setCategories(uniqueCategories);
 
-        // Set the active category and filtered images
         if (uniqueCategories.length > 0) {
             setActiveCategory(uniqueCategories[0]);
             setFilteredImages(parsedData.filter((image) => image.category === uniqueCategories[0]));
         }
+
+        setIsDataFetched(true); // Set flag to true after data is successfully fetched
+
     } catch (error) {
         console.error('Error fetching image data:', error);
     }
-};
-
+  };
 
   useEffect(() => {
-    console.log("useEffect running...");
-    fetchData(); // Fetch data when component mounts
-  }, []); // Only run once on mount
+    if (!isDataFetched) {
+      fetchData(); // Fetch data when component mounts if not already fetched
+    }
+  }, [isDataFetched]);
 
   const handleSelectCategory = (category) => {
     console.log("Category Selected:", category);
@@ -62,6 +57,7 @@ function App() {
 
   return (
     <div>
+      <button onClick={fetchData.bind(this)}>Reload Images</button> {/* Button with bind */}
       <CategoryMenu
         categories={categories}
         activeCategory={activeCategory}
@@ -72,5 +68,4 @@ function App() {
   );
 }
 
-export default App
-
+export default App;
