@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import '../App.css';
-import MyDropzone from './DropOff';
+import ImageDrop from './ImageDrop';
 
 const CategoryMenu = ({ categories, activeCategory, onSelectCategory }) => {
     const submenuRef = useRef(null);
@@ -38,7 +38,7 @@ const CategoryMenu = ({ categories, activeCategory, onSelectCategory }) => {
                     ))}
                 </div>
         </div>
-            <MyDropzone className='text-gray-300 border-dashed border-2 border-gray-300 rounded-xl cursor-pointer p-6 flex justify-center items-center mt-auto'/>
+        <ImageDrop className='text-gray-900/80 text-sm bg-imageDropGray rounded-xl cursor-pointer py-4 px-2 flex justify-center items-center mt-auto'/>
         </div>
     );
 };
