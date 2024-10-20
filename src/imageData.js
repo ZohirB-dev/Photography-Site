@@ -1,4 +1,4 @@
-[
+const ImageData = [
   {
     "id": 1,
     "category": "London",
@@ -42,3 +42,5 @@
     "alt": "image5 City London Architecture jpg"
   }
 ]
+
+export default ImageData;
